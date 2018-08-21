@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <errno.h>
+#include <malloc.h>
 
 #define EXPECT(c, ch) do { assert(*c->json == (ch)); c->json++; } while(0)
 #define ISDIGITAL(ch) ((ch) >= '0' && (ch) <= '9')
@@ -84,7 +85,7 @@ static int lept_parse_number(lept_context *c, lept_value *v) {
     }
 
     errno = 0;
-    v->n = strtod(c->json, NULL);
+    v->val.n = strtod(c->json, NULL);
 
     if (errno == ERANGE && (v->n == HUGE_VAL || v->n == -HUGE_VAL))
         return LEPT_PARSE_NUMBER_TOO_BIG;
@@ -123,12 +124,49 @@ int lept_parse(lept_value *v, const char *json) {
     return ret;
 }
 
+lept_free(lept_value *v) {
+    assert( v != NULL);
+    if (v->type == LEPT_STRING)
+        free(v->val.s.s);
+    v->type = LEPT_NULL;
+}
+
 lept_type lept_get_type(const lept_value *v) {
     assert(v != NULL);
     return v->type;
 }
 
+int lept_get_boolean(const lept_value* v) {
+
+}
+
+void lept_set_boolean(lept_value* v, int b) {
+
+}
+
 double lept_get_number(const lept_value *v) {
     assert(v != NULL && v->type == LEPT_NUMBER);
-    return v->n;
+    return v->val.n;
+}
+
+void lept_set_number(lept_value *v, double n) {
+
+}
+
+const char* lept_get_string(const lept_value* v) {
+
+}
+
+size_t lept_get_string_length(const lept_value* v) {
+
+}
+
+void lept_set_string(lept_value* v, const char* s, size_t len) {
+    assert(v != NULL && (s != NULL || len == 0));
+    lept_free(v);
+    v->val.s.s = (char *)malloc(len + 1);
+    memcpy(v->val.s.s, s, len);
+    v->val.s.s[len] = '\0';
+    v->val.s.len = len;
+    v->type = LEPT_STRING;
 }

@@ -115,6 +115,12 @@ static void test_parse_number_too_big() {
 #endif
 }
 
+static void test_access_string() {
+    lept_value v;
+    lept_init(&v);
+    lept_set_string(&v, "", 0);
+}
+
 static void test_parse() {
     test_parse_null();
     test_parse_true();
