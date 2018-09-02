@@ -652,15 +652,31 @@ void myjson_popback_array_element(myjson_value* v) {
     myjson_free(&v->val.arr.e[--v->val.arr.size]);
 }
 
-myjson_value* my_json_insert_array_element(myjson_value* v, size_t index) {
+myjson_value* myjson_insert_array_element(myjson_value* v, size_t index) {
     assert(v != NULL && v->type == MYJSON_ARRAY && index <= v->val.arr.size);
     // incomplete
-    return NULL;
+    if (v->val.arr.capacity == v->val.arr.size)
+        myjson_reserve_array(v, v->val.arr.capacity * 2);
+    size_t i = v->val.arr.size - 1;
+    for (; i > index; i--) {
+        myjson_move(&v->val.arr.e[i + 1], &v->val.arr.e[i]);
+    }
+    myjson_init(&v->val.arr.e[i]);
+    v->val.arr.size += 1;
+    return &v->val.arr.e[i];
 }
 
 void myjson_erase_array_element(myjson_value* v, size_t index, size_t count) {
     assert(v != NULL && v->type == MYJSON_ARRAY && index + count <= v->val.arr.size);
     //incomplete
+    if (count == 0)
+        return ;
+
+    size_t i = index;
+    for (; i + count < v->val.arr.size; i++) {
+        myjson_move(&v->val.arr.e[i], &v->val.arr.e[i + count]);
+    }
+    v->val.arr.size -= count;  
 }
 
 void myjson_set_object(myjson_value* v, size_t capacity) {

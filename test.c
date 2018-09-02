@@ -540,7 +540,6 @@ static void test_access_array() {
             myjson_move(myjson_pushback_array_element(&a), &e);
             myjson_free(&e);
         }
-
         EXPECT_EQ_SIZE_T(10, myjson_get_array_size(&a));
         for (i = 0; i < 10; i++)
             EXPECT_EQ_DOUBLE((double)i, myjson_get_number(myjson_get_array_element(&a, i)));
@@ -566,14 +565,14 @@ static void test_access_array() {
     for (i = 0; i < 6; i++)
         EXPECT_EQ_DOUBLE((double)i + 2, myjson_get_number(myjson_get_array_element(&a, i)));
 
-#if 0
+// #if 0
     for (i = 0; i < 2; i++) {
         myjson_init(&e);
         myjson_set_number(&e, i);
         myjson_move(myjson_insert_array_element(&a, i), &e);
         myjson_free(&e);
     }
-#endif
+// #endif
     
     EXPECT_EQ_SIZE_T(8, myjson_get_array_size(&a));
     for (i = 0; i < 8; i++)
