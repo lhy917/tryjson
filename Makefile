@@ -1,9 +1,9 @@
 cc=gcc
-test : leptjson.o test.o
-	cc -o test leptjson.o test.o
-leptjson.o : leptjson.h
-	cc -c leptjson.c
-test.o : leptjson.o
+test : myjson.o test.o
+	cc -o test myjson.o test.o
+leptjson.o : myjson.h
+	cc -c myjson.c
+test.o : myjson.o
 	cc -c test.c
 clean:
-	rm test leptjson.o test.o
+	rm test myjson.o test.o
